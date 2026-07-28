@@ -1,4 +1,4 @@
-
+import torch
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from ultralytics import YOLO
@@ -20,7 +20,9 @@ app.add_middleware(
 )
 
 # Load YOLO model (only once when server starts)
+DEVICE = "cpu"
 model = YOLO("yolov8n.pt")
+model.to(DEVICE)
 
 
 @app.get("/")
@@ -42,13 +44,18 @@ async def detect(file: UploadFile = File(...)):
     # Decode image using OpenCV
     image = cv2.imdecode(np_array, cv2.IMREAD_COLOR)
 
+    if image is None:
+        return []
+
     # Run YOLO
-    results = model.predict(
-        image,
-        conf=0.40,
-        imgsz=960,
-        verbose=False,
-    )
+    with torch.inference_mode():
+        results = model.predict(
+            image,
+            conf=0.40,
+            imgsz=640,
+            device="cpu",
+            verbose=False,
+        )
 
     result = results[0]
     
@@ -77,5 +84,5 @@ async def detect(file: UploadFile = File(...)):
             "y2": round(y2)
             
         })
-
+    del results
     return detections
