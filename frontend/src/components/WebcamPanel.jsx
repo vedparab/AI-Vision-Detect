@@ -88,7 +88,7 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
                     detectionHistoryRef.current.shift();
                 }
 
-                const history = detectionHistoryRef.current;
+               /**const history = detectionHistoryRef.current;
 
                 // Wait until we have 3 frames
                 if (history.length < 2) {
@@ -136,7 +136,7 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
                                 Math.round(averageConfidence * 100) / 100
                         });
                     }
-                });
+                });**/
 
                 setDetections(confirmedDetections);
 
