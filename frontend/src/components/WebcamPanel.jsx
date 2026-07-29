@@ -136,10 +136,10 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
                                 Math.round(averageConfidence * 100) / 100
                         });
                     }
-                });**/
-
-                setDetections(confirmedDetections);
-
+                });
+                setDetections(confirmedDetections);**/
+                
+                setDetections(filteredDetections);
             }
             catch(error){
 
