@@ -140,6 +140,7 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
                 setDetections(confirmedDetections);**/
                 
                 setDetections(filteredDetections);
+                console.log("Setting detections:", filteredDetections);
             }
             catch(error){
 
@@ -263,6 +264,16 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
             return;
         }
 
+        console.log("Drawing detections:", detections);
+        console.log(
+            "Canvas:",
+            canvas.width,
+            canvas.height,
+            "Video:",
+            video.videoWidth,
+            video.videoHeight
+        );
+        
         detections.forEach((detection) => {
 
             const x = detection.x1;
