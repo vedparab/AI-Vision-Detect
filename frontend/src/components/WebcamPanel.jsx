@@ -40,6 +40,7 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
         setCameraOn(false);
 
     };
+    console.log("captureFrame called");
     const captureFrame = () => {
         if (isDetectingRef.current) return;
         
@@ -65,14 +66,15 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
 
         ctx.drawImage(video, 0, 0);
 
+        console.log("Frame captured");
         canvas.toBlob(async (blob) => {
 
             if (!blob) return;
 
             try {
-
+                console.log("Calling backend...");
                 const result = await detectObjects(blob);
-
+                console.log("Backend response:", result);
                 // Ignore very weak predictions
                 const filteredDetections = result.filter(
                     (detection) => detection.confidence >= 0.30
@@ -141,7 +143,7 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
             }
             catch(error){
 
-                console.error(error);
+                console.error("Detection Error:", error);
 
             }
             finally{
