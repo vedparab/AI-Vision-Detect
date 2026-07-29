@@ -40,8 +40,7 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
         setCameraOn(false);
 
     };
-    console.log("captureFrame called");
-    const captureFrame = () => {
+const captureFrame = () => {
         if (isDetectingRef.current) return;
         
 
@@ -65,17 +64,13 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
         const ctx = canvas.getContext("2d");
 
         ctx.drawImage(video, 0, 0);
-
-        console.log("Frame captured");
-        canvas.toBlob(async (blob) => {
+canvas.toBlob(async (blob) => {
 
             if (!blob) return;
 
             try {
-                console.log("Calling backend...");
-                const result = await detectObjects(blob);
-                console.log("Backend response:", result);
-                // Ignore very weak predictions
+const result = await detectObjects(blob);
+// Ignore very weak predictions
                 const filteredDetections = result.filter(
                     (detection) => detection.confidence >= 0.30
                 );
@@ -140,8 +135,7 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
                 setDetections(confirmedDetections);**/
                 
                 setDetections(filteredDetections);
-                console.log("Setting detections:", filteredDetections);
-            }
+}
             catch(error){
 
                 console.error("Detection Error:", error);
@@ -198,13 +192,23 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
 
         if (!cameraOn) return;
 
-        const interval = setInterval(() => {
+        let cancelled = false;
 
-            captureFrame();
+        const loop = async () => {
+            while (!cancelled) {
+                captureFrame();
+                while (isDetectingRef.current && !cancelled) {
+                    await new Promise(r => setTimeout(r, 50));
+                }
+                await new Promise(r => setTimeout(r, 700));
+            }
+        };
 
-        }, 700);
+        loop();
 
-        return () => clearInterval(interval);
+        return () => {
+            cancelled = true;
+        };
 
     }, [cameraOn]);
 
@@ -273,7 +277,7 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
             video.videoWidth,
             video.videoHeight
         );
-        
+
         detections.forEach((detection) => {
 
             const x = detection.x1;
