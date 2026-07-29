@@ -10,7 +10,7 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
     const detectionHistoryRef = useRef([]);
 
     const [cameraOn, setCameraOn] = useState(false);
-    const [isDetecting, setIsDetecting] = useState(false);
+    const isDetectingRef = useRef(false);
     
 
     const startCamera = () => {
@@ -41,7 +41,7 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
 
     };
     const captureFrame = () => {
-        if (isDetecting) return;
+        if (isDetectingRef.current) return;
         
 
         if (!videoRef.current || !captureCanvasRef.current) return;
@@ -56,7 +56,7 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
             return;
         }
 
-        setIsDetecting(true);
+        isDetectingRef.current = true;
 
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -75,7 +75,7 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
 
                 // Ignore very weak predictions
                 const filteredDetections = result.filter(
-                    (detection) => detection.confidence >= 0.50
+                    (detection) => detection.confidence >= 0.30
                 );
 
                 // Store current frame
@@ -89,7 +89,7 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
                 const history = detectionHistoryRef.current;
 
                 // Wait until we have 3 frames
-                if (history.length < 3) {
+                if (history.length < 2) {
                     return;
                 }
 
@@ -146,7 +146,7 @@ const WebcamPanel = forwardRef(({ detections, setDetections }, ref) =>{
             }
             finally{
 
-                setIsDetecting(false);
+                isDetectingRef.current = false;
 
             }
 
