@@ -24,6 +24,8 @@ DEVICE = "cpu"
 model = YOLO("yolov8n.pt")
 model.to(DEVICE)
 
+torch.set_num_threads(1)
+torch.set_num_interop_threads(1)
 
 @app.get("/")
 def home():
@@ -52,6 +54,7 @@ async def detect(file: UploadFile = File(...)):
     if image is None:
         return []
 
+    image = cv2.resize(image, (320, 320))
     # ---------------- PREDICT ----------------
     t2 = time.perf_counter()
 
@@ -59,7 +62,7 @@ async def detect(file: UploadFile = File(...)):
         results = model.predict(
             image,
             conf=0.40,
-            imgsz=640,
+            imgsz=320,
             device="cpu",
             verbose=False,
         )
@@ -140,7 +143,7 @@ async def detect(file: UploadFile = File(...)):
         results = model.predict(
             image,
             conf=0.40,
-            imgsz=640,
+            imgsz=320,
             device="cpu",
             verbose=False,
         )
