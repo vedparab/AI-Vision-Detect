@@ -31,19 +31,97 @@ def home():
         "message": "Welcome to AI Vision Detect Backend"
     }
 
-
 @app.post("/detect")
 async def detect(file: UploadFile = File(...)):
-    await file.read()
 
-    return [{
-        "class": "test",
-        "confidence": 0.99,
-        "x1": 100,
-        "y1": 100,
-        "x2": 300,
-        "y2": 300
-    }]
+    # ---------------- READ ----------------
+    t0 = time.perf_counter()
+
+    image_bytes = await file.read()
+
+    print(f"READ: {time.perf_counter() - t0:.4f} sec")
+
+    # ---------------- DECODE ----------------
+    t1 = time.perf_counter()
+
+    np_array = np.frombuffer(image_bytes, np.uint8)
+    image = cv2.imdecode(np_array, cv2.IMREAD_COLOR)
+
+    print(f"DECODE: {time.perf_counter() - t1:.4f} sec")
+
+    if image is None:
+        return []
+
+    # ---------------- PREDICT ----------------
+    t2 = time.perf_counter()
+
+    with torch.inference_mode():
+        results = model.predict(
+            image,
+            conf=0.40,
+            imgsz=640,
+            device="cpu",
+            verbose=False,
+        )
+
+    print(f"PREDICT: {time.perf_counter() - t2:.4f} sec")
+
+    result = results[0]
+
+    detections = []
+
+    for box in result.boxes:
+
+        class_id = int(box.cls[0])
+
+        confidence = float(box.conf[0])
+
+        class_name = result.names[class_id]
+
+        x1, y1, x2, y2 = box.xyxy[0].tolist()
+
+        detections.append({
+            "class": class_name,
+            "confidence": round(confidence, 2),
+            "x1": round(x1),
+            "y1": round(y1),
+            "x2": round(x2),
+            "y2": round(y2)
+        })
+
+    del results
+
+    return detections
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
+@app.post("/detect")
+async def detect(file: UploadFile = File(...)):
+
 
     # Read uploaded image bytes
     image_bytes = await file.read()
@@ -95,4 +173,4 @@ async def detect(file: UploadFile = File(...)):
             
         })
     del results
-    return detections
+    return detections'''
