@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from ultralytics import YOLO
 import cv2
 import numpy as np
-
+import time
 
 app = FastAPI()
 
@@ -34,6 +34,16 @@ def home():
 
 @app.post("/detect")
 async def detect(file: UploadFile = File(...)):
+    await file.read()
+
+    return [{
+        "class": "test",
+        "confidence": 0.99,
+        "x1": 100,
+        "y1": 100,
+        "x2": 300,
+        "y2": 300
+    }]
 
     # Read uploaded image bytes
     image_bytes = await file.read()
