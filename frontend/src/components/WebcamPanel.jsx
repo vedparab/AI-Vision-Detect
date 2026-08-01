@@ -64,13 +64,13 @@ const captureFrame = () => {
         const ctx = canvas.getContext("2d");
 
         ctx.drawImage(video, 0, 0);
-canvas.toBlob(async (blob) => {
+        canvas.toBlob(async (blob) => {
 
             if (!blob) return;
 
             try {
-const result = await detectObjects(blob);
-// Ignore very weak predictions
+                const result = await detectObjects(blob);
+                // Ignore very weak predictions
                 const filteredDetections = result.filter(
                     (detection) => detection.confidence >= 0.30
                 );
@@ -278,8 +278,18 @@ const result = await detectObjects(blob);
             video.videoHeight
         );
 
-        detections.forEach((detection) => {
+        console.log({
+            videoWidth: video.videoWidth,
+            videoHeight: video.videoHeight,
+            clientWidth: video.clientWidth,
+            clientHeight: video.clientHeight,
+            canvasWidth: canvas.width,
+            canvasHeight: canvas.height,
+        });
 
+
+        detections.forEach((detection) => {
+            console.log("Detection:", detection);
             const x = detection.x1;
             const y = detection.y1;
 

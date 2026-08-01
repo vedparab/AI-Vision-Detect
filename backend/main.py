@@ -54,7 +54,7 @@ async def detect(file: UploadFile = File(...)):
     if image is None:
         return []
 
-    image = cv2.resize(image, (320, 320))
+    
     # ---------------- PREDICT ----------------
     t2 = time.perf_counter()
 
