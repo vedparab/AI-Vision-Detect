@@ -200,7 +200,7 @@ const captureFrame = () => {
                 while (isDetectingRef.current && !cancelled) {
                     await new Promise(r => setTimeout(r, 50));
                 }
-                await new Promise(r => setTimeout(r, 700));
+                await new Promise(r => setTimeout(r, 300));
             }
         };
 
