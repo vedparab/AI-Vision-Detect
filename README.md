@@ -217,6 +217,49 @@ The model is integrated into the FastAPI backend to perform inference on webcam 
 
 AI Vision Detect Version 1.0 is the final stable release of this project. It has been completed as a full-stack portfolio application demonstrating real-time object detection using a pretrained YOLOv8n model, FastAPI, React, Firebase Authentication, Railway, and Vercel deployment.
 
+# 📸 Screenshots
+
+## 🏠 Landing Page
+
+![Landing Page](screenshots/landing-page.png)
+
+---
+
+## 🔐 Login Page
+
+![Login Page](screenshots/login-page.png)
+
+---
+
+## 📝 Signup Page
+
+![Signup Page](screenshots/signup-page.png)
+
+---
+
+## 📊 Dashboard
+
+![Dashboard](screenshots/dashboard.png)
+
+---
+
+## 🎥 Live Object Detection
+
+![Live Detection](screenshots/detection-person-phone.png)
+
+---
+
+## 📜 Detection History
+
+![Detection History](screenshots/history.png)
+
+---
+
+## 📄 API Documentation (Swagger UI)
+
+![Swagger UI](screenshots/swagger-docs.png)
+
+
 # 👨‍💻 Author
 
 **Ved Rajesh Parab**
